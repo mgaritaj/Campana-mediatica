@@ -154,40 +154,36 @@
   <div class="accent-bar"></div>
 </div>
 
-<iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
-
 <script>
 function submitForm() {
-  const base = "https://docs.google.com/forms/d/e/1FAIpQLSduzU1bW3N9-0mGdlnbM9Epr2QS5rVl0zglZWFgfTGGqjABNQ/formResponse";
+  const scriptURL = "https://script.google.com/macros/s/AKfycbwYK7lUIJddd88MdDOw2GgK1E0TLJbhEbqdFGFPOyk6SbxMMLF8FhRP7WjUwpNpF-OQNg/exec";
   const fields = [
     "261817188","992916647","1273936373","311659224","1352443048",
     "753426159","1654755469","388538169","46748773","2044462795",
     "139453002","911336389","1180566075","1741976105","617893855"
   ];
 
-  const form = document.createElement("form");
-  form.method = "POST";
-  form.action = base;
-  form.target = "hidden_iframe";
-
+  const formData = new FormData();
   fields.forEach(id => {
     const val = document.getElementById("f_" + id)?.value || "";
-    const input = document.createElement("input");
-    input.type = "hidden";
-    input.name = "entry." + id;
-    input.value = val;
-    form.appendChild(input);
+    formData.append("entry." + id, val);
   });
 
-  document.body.appendChild(form);
-  form.submit();
-  document.body.removeChild(form);
+  document.querySelector(".submit-btn").disabled = true;
+  document.querySelector(".submit-btn").textContent = "Enviando...";
 
-  setTimeout(() => {
-    document.getElementById("successMsg").style.display = "block";
-    document.querySelector(".submit-btn").disabled = true;
-    document.querySelector(".submit-btn").style.background = "#888";
-  }, 500);
+  fetch(scriptURL, { method: "POST", body: formData })
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById("successMsg").style.display = "block";
+      document.querySelector(".submit-btn").style.background = "#888";
+      document.querySelector(".submit-btn").textContent = "Enviado";
+    })
+    .catch(() => {
+      document.getElementById("successMsg").style.display = "block";
+      document.querySelector(".submit-btn").style.background = "#888";
+      document.querySelector(".submit-btn").textContent = "Enviado";
+    });
 }
 </script>
 
