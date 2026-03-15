@@ -154,6 +154,8 @@
   <div class="accent-bar"></div>
 </div>
 
+<iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
+
 <script>
 function submitForm() {
   const base = "https://docs.google.com/forms/d/e/1FAIpQLSduzU1bW3N9-0mGdlnbM9Epr2QS5rVl0zglZWFgfTGGqjABNQ/formResponse";
@@ -162,22 +164,30 @@ function submitForm() {
     "753426159","1654755469","388538169","46748773","2044462795",
     "139453002","911336389","1180566075","1741976105","617893855"
   ];
-  const params = fields.map(id => {
+
+  const form = document.createElement("form");
+  form.method = "POST";
+  form.action = base;
+  form.target = "hidden_iframe";
+
+  fields.forEach(id => {
     const val = document.getElementById("f_" + id)?.value || "";
-    return "entry." + id + "=" + encodeURIComponent(val);
-  }).join("&");
+    const input = document.createElement("input");
+    input.type = "hidden";
+    input.name = "entry." + id;
+    input.value = val;
+    form.appendChild(input);
+  });
 
-  const url = base + "?" + params + "&submit=Submit";
+  document.body.appendChild(form);
+  form.submit();
+  document.body.removeChild(form);
 
-  fetch(url, { method: "POST", mode: "no-cors" })
-    .then(() => {
-      document.getElementById("successMsg").style.display = "block";
-      document.querySelector(".submit-btn").disabled = true;
-      document.querySelector(".submit-btn").style.background = "#888";
-    })
-    .catch(() => {
-      document.getElementById("successMsg").style.display = "block";
-    });
+  setTimeout(() => {
+    document.getElementById("successMsg").style.display = "block";
+    document.querySelector(".submit-btn").disabled = true;
+    document.querySelector(".submit-btn").style.background = "#888";
+  }, 500);
 }
 </script>
 
