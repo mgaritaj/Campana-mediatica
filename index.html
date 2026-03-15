@@ -156,7 +156,7 @@
 
 <script>
 function submitForm() {
-  const scriptURL = "https://script.google.com/macros/s/AKfycbwYK7lUIJddd88MdDOw2GgK1E0TLJbhEbqdFGFPOyk6SbxMMLF8FhRP7WjUwpNpF-OQNg/exec";
+  const scriptURL = "https://script.google.com/macros/s/AKfycbxeNQPapJLbqok2VqVjhMQf7wzbV8Bgnt_jHwucmlHLav3WmrBn1qv2RXyZB3fLfAz2cw/exec";
   const fields = [
     "261817188","992916647","1273936373","311659224","1352443048",
     "753426159","1654755469","388538169","46748773","2044462795",
@@ -172,9 +172,8 @@ function submitForm() {
   document.querySelector(".submit-btn").disabled = true;
   document.querySelector(".submit-btn").textContent = "Enviando...";
 
-  fetch(scriptURL, { method: "POST", body: formData })
-    .then(res => res.json())
-    .then(data => {
+  fetch(scriptURL, { method: "POST", body: formData, mode: "no-cors" })
+    .then(() => {
       document.getElementById("successMsg").style.display = "block";
       document.querySelector(".submit-btn").style.background = "#888";
       document.querySelector(".submit-btn").textContent = "Enviado";
