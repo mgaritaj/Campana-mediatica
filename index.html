@@ -154,35 +154,46 @@
   <div class="accent-bar"></div>
 </div>
 
+<iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
+
 <script>
+window.addEventListener("message", function(e) {
+  if (e.data === "success") {
+    document.getElementById("successMsg").style.display = "block";
+    document.querySelector(".submit-btn").style.background = "#888";
+    document.querySelector(".submit-btn").textContent = "Enviado";
+    document.querySelector(".submit-btn").disabled = true;
+  }
+});
+
 function submitForm() {
-  const scriptURL = "https://script.google.com/macros/s/AKfycbwScgcN8GAPiYb4fILpbwT_sbsgIoPV1h19l3pQ4AOowBTPvk2lvoCMEFWq_r_om-OqHw/exec";
+  const scriptURL = "https://script.google.com/macros/s/AKfycbzCOTRjGbmmtYNxJIE_oHoj-F_hEO6Kt8P2296DaUq5cEYzNyP3xTVgV9tuMXfBI0sEWQ/exec";
   const fields = [
     "261817188","992916647","1273936373","311659224","1352443048",
     "753426159","1654755469","388538169","46748773","2044462795",
     "139453002","911336389","1180566075","1741976105","617893855"
   ];
 
-  const formData = new FormData();
+  const form = document.createElement("form");
+  form.method = "POST";
+  form.action = scriptURL;
+  form.target = "hidden_iframe";
+
   fields.forEach(id => {
     const val = document.getElementById("f_" + id)?.value || "";
-    formData.append("entry." + id, val);
+    const input = document.createElement("input");
+    input.type = "hidden";
+    input.name = "entry." + id;
+    input.value = val;
+    form.appendChild(input);
   });
+
+  document.body.appendChild(form);
+  form.submit();
+  document.body.removeChild(form);
 
   document.querySelector(".submit-btn").disabled = true;
   document.querySelector(".submit-btn").textContent = "Enviando...";
-
-  fetch(scriptURL, { method: "POST", body: formData, mode: "no-cors" })
-    .then(() => {
-      document.getElementById("successMsg").style.display = "block";
-      document.querySelector(".submit-btn").style.background = "#888";
-      document.querySelector(".submit-btn").textContent = "Enviado";
-    })
-    .catch(() => {
-      document.getElementById("successMsg").style.display = "block";
-      document.querySelector(".submit-btn").style.background = "#888";
-      document.querySelector(".submit-btn").textContent = "Enviado";
-    });
 }
 </script>
 
